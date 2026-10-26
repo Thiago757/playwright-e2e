@@ -6,11 +6,11 @@ const config: PlaywrightTestConfig = {
   retries: 0,
   use: {
     trace: 'on',
-    channel: 'msedge',
+    channel: process.env.PLAYWRIGHT_CHANNEL || 'chromium',
     locale: 'pt-BR',
     headless: true,
     viewport: { width: 1280, height: 720 },
-    ignoreHTTPSErrors: true,
+    ignoreHTTPSErrors: false,
     screenshot: 'on',
     video: 'off'
   },
@@ -18,6 +18,8 @@ const config: PlaywrightTestConfig = {
     timeout: 30000
   },
   reporter: [
+    ['line'],
+    ['./src/support/reporters/SonarReporter.ts'],
     [
       'html',
       {
