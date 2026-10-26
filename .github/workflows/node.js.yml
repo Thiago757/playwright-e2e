@@ -17,6 +17,8 @@ jobs:
     name: Run E2E Tests
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      PLAYWRIGHT_CHANNEL: chrome
     steps:
       - uses: actions/checkout@v7.0.0
       - name: Use Node.js 24
@@ -25,7 +27,8 @@ jobs:
           node-version: '24.15.0'
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - name: Verify preinstalled Google Chrome
+        run: google-chrome --version
       - name: Validate and run E2E tests
         run: npm run ci
       - name: Check Sonar execution report
