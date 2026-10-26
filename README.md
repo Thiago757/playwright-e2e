@@ -42,7 +42,8 @@ TLS certificate validation remains enabled during tests.
 - Sonar project: `Thiago757_playwright-e2e`.
 - Authentication: GitHub Actions repository secret `SONAR_TOKEN`, never committed.
 
-The workflow has two dependent jobs: `Run E2E Tests` and `Run SonarCloud`.
+The workflow has two dependent jobs: `Run E2E Tests` and `Run SonarCloud`, both
+on Ubuntu 24.04 to avoid unexpected changes in the `ubuntu-latest` image.
 The first installs Chromium, validates the project and generates the HTML report,
 traces and `artifacts/sonar-test-execution.xml`. The second downloads these
 artifacts, publishes the analysis and waits for the Quality Gate. Missing tokens,

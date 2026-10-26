@@ -15,7 +15,7 @@ permissions:
 jobs:
   build:
     name: Run E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.0
@@ -42,7 +42,7 @@ jobs:
   sonarcloud:
     name: Run SonarCloud
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.0
