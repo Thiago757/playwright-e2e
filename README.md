@@ -26,13 +26,14 @@ Chromium is the default browser. To use Microsoft Edge instead, install it first
 and run `PLAYWRIGHT_CHANNEL=msedge npm test`. Installing Edge via
 `npx playwright install msedge` on macOS requires an administrator password.
 
-The suite contains five tests: two for delivery registration, two for Globo.com,
+The suite contains five E2E tests: two for delivery registration, two for Globo.com,
 and one for Sauce Demo. They require access to those external websites.
+There are also eight unit tests for the Sonar reporter, without access to sites.
 Use `npm run scenario` to run only Sauce Demo, `npm run ui` for the interactive
 test runner, and `npx tsc --noEmit` to check TypeScript.
 
 `npm run ci` cleans generated artifacts, checks formatting and TypeScript, then
-runs the five tests with one worker. It does not rewrite source files.
+runs all 13 tests with one worker and collects coverage. It does not rewrite source files.
 TLS certificate validation remains enabled during tests.
 
 ## SonarCloud configuration
@@ -47,7 +48,8 @@ on Ubuntu 24.04 to avoid unexpected changes in the `ubuntu-latest` image.
 The first uses Google Chrome already installed on the official GitHub runner,
 validates the project and generates the HTML report,
 traces and `artifacts/sonar-test-execution.xml`. The second downloads these
-artifacts, publishes the analysis and waits for the Quality Gate. Missing tokens,
+artifacts, imports the execution report and LCOV coverage, publishes the analysis
+and waits for the Quality Gate. Missing tokens,
 failed tests and failed Quality Gates are not ignored.
 
 The existing daily schedule is preserved, and manual execution is available
@@ -60,10 +62,17 @@ configuration as source code; `src/scenarios` is classified as tests. The custom
 real outcomes, durations and failures using Sonar's
 [generic execution format](https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/test-coverage/generic-test-data).
 
-Test execution is not code coverage: these E2E tests access external websites
-whose application source code is not in this repository. No application coverage
-or artificial 100% result is generated. Static analysis findings remain visible
-and may cause the Quality Gate to fail.
+The c8 tool measures the real Node.js execution of Page Objects, element mappings,
+the reporter and configuration, and generates `artifacts/coverage/lcov.info`.
+Its `all: true` setting includes files not exercised by the suite, without hiding
+unused helpers. The reporter unit tests verify passed/failed/skipped/interrupted
+states, XML escaping, grouping and duration calculations.
+
+This is coverage of this repository's automation, not of Globo, Buger Eats or
+Sauce Demo application code: those external applications are not in this repository.
+No external application coverage or artificial overall 100% result is generated.
+Static analysis findings and insufficient coverage on new code remain capable of
+failing the Quality Gate; the threshold has not been lowered.
 
 Artifacts are retained for seven days in the workflow run. The npm audit alerts
 in the inherited dependencies require a separate dependency review; configuring

@@ -1,0 +1,14 @@
+{
+  "all": true,
+  "include": [
+    "src/support/pages/**/*.ts",
+    "src/support/elements/**/*.ts",
+    "src/support/reporters/**/*.ts",
+    "playwright.config.ts"
+  ],
+  "extension": [".ts"],
+  "exclude-after-remap": true,
+  "temp-directory": "artifacts/.v8",
+  "reports-dir": "artifacts/coverage",
+  "reporter": ["text", "lcov", "json-summary"]
+}

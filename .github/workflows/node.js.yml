@@ -32,13 +32,17 @@ jobs:
       - name: Validate and run E2E tests
         run: npm run ci
       - name: Check Sonar execution report
-        run: test -s artifacts/sonar-test-execution.xml
+        run: |
+          test -s artifacts/sonar-test-execution.xml
+          test -s artifacts/coverage/lcov.info
       - name: Save reports and traces
         if: always()
         uses: actions/upload-artifact@v7.0.1
         with:
           name: playwright-results
-          path: artifacts/
+          path: |
+            artifacts/
+            !artifacts/.v8/
           retention-days: 7
           if-no-files-found: warn
 
@@ -67,6 +71,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           test -s artifacts/sonar-test-execution.xml
+          test -s artifacts/coverage/lcov.info
           if [ -z "$SONAR_TOKEN" ]; then
             echo '::error::Configure SONAR_TOKEN em Settings > Secrets and variables > Actions.'
             exit 1
